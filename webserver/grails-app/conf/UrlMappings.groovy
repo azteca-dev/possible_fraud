@@ -1,13 +1,16 @@
+import api.fraud.MaskFraud
+
 class UrlMappings {
 
 	static mappings = {
-        "/$controller/$action?/$id?(.$format)?"{
-            constraints {
-                // apply constraints here
-            }
+        "/"{
+            controller = "MaskFraud"
+            action = [GET:'notAllowed', POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
         }
 
-        "/"(view:"/index")
-        "500"(view:'/error')
+        "/maskfraud"{
+            controller = "MaskFraud"
+            action = [GET:'getItemsMaskFraud', POST:'addItemMaskFraud', PUT:'modifyItemMaskFraud', DELETE:'']
+        }
 	}
 }

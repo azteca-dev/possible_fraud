@@ -17,7 +17,7 @@ class BootStrap {
             if(MaskFraud.count() == 0){
 
                 def ItemMaskFraud01 = new MaskFraud(
-                        type: 'telefono',
+                        parameterName: 'telefono',
                         status:'active',
 
                 )
@@ -29,7 +29,7 @@ class BootStrap {
                 }
 
                 def ItemMaskFraude02 = new MaskFraud(
-                        type:'email',
+                        parameterName:'email',
                         status: 'active'
                 )
 
@@ -45,7 +45,7 @@ class BootStrap {
             if(ValuesFraud.count() == 0){
 
                 def ValueFraud01 = new ValuesFraud(
-                        type:'telefono',
+                        parameterName:'telefono',
                         value:'5528886754',
                         status: 'active'
                 )
@@ -58,7 +58,7 @@ class BootStrap {
                 }
 
                 def ValueFraud02 = new ValuesFraud(
-                        type:'email',
+                        parameterName:'email',
                         value:'david@detocho.com.mx',
                         status: 'active'
                 )
