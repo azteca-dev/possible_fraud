@@ -2,10 +2,7 @@ package api.fraud
 
 import javax.servlet.http.HttpServletResponse
 import grails.converters.*
-import static org.springframework.http.HttpStatus.*
-import static org.springframework.http.HttpMethod.*
 import api.fraud.exceptions.NotFoundException
-import api.fraud.exceptions.ConflictException
 import api.fraud.exceptions.BadRequestException
 
 class MaskFraudController {

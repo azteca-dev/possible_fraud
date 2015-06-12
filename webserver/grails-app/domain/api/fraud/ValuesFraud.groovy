@@ -3,7 +3,7 @@ package api.fraud
 class ValuesFraud {
 
     static constraints = {
-        parameterName                nullable:false, blank:false, maxSize: 50
+        parameterName       nullable:false, blank:false, maxSize: 50
         value               nullable:false, blank:false, maxSize: 100
         status              inList: ['active', 'deleted']
         userRegistration    nullable:false, blank:false

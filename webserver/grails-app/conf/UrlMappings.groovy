@@ -10,7 +10,12 @@ class UrlMappings {
 
         "/maskfraud"{
             controller = "MaskFraud"
-            action = [GET:'getItemsMaskFraud', POST:'addItemMaskFraud', PUT:'modifyItemMaskFraud', DELETE:'']
+            action = [GET:'getItemsMaskFraud', POST:'addItemMaskFraud', PUT:'modifyItemMaskFraud', DELETE:'notAllowed']
+        }
+
+        "/valuefraud"{
+            controller = "ValuesFraud"
+            action = [GET:'getItemValue', POST:'addItemValue', PUT:'modifyItemValue', DELETE:'notAllowed']
         }
 	}
 }

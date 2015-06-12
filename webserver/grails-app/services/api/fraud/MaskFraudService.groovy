@@ -2,9 +2,7 @@ package api.fraud
 
 import grails.transaction.Transactional
 import api.fraud.exceptions.NotFoundException
-import api.fraud.exceptions.ConflictException
 import api.fraud.exceptions.BadRequestException
-import javax.servlet.http.HttpServletResponse
 import java.text.MessageFormat
 
 @Transactional
