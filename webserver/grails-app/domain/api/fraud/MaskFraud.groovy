@@ -12,6 +12,7 @@ class MaskFraud {
         dateDeactivation    nullable:true
         dateActivation      nullable:true
         dateRegistration    nullable:false
+        score               nullable:false, blank:false, max: 100, min:0
     }
 
     String parameterName
@@ -22,6 +23,8 @@ class MaskFraud {
     String userRegistration = 'sin_user'
     String userDeactivation
     String userActivation   = 'sin_user'
+    int score = 0
+    List enabledSites = []
 
     //TODO agregar un mapa para saber en que sitio este parametro es considerado posible fraude
 }

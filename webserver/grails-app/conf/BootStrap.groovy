@@ -16,9 +16,14 @@ class BootStrap {
 
             if(MaskFraud.count() == 0){
 
+                def enabledSitesTest = ["mlm,apc"]
+
+
                 def ItemMaskFraud01 = new MaskFraud(
                         parameterName: 'telefono',
                         status:'active',
+                        score:10,
+                        enabledSites: enabledSitesTest
 
                 )
                 if(!ItemMaskFraud01.save()){
@@ -28,9 +33,12 @@ class BootStrap {
                     }
                 }
 
+                enabledSitesTest = ['mlm,apc,carmudi']
                 def ItemMaskFraude02 = new MaskFraud(
                         parameterName:'email',
-                        status: 'active'
+                        status: 'active',
+                        score:60,
+                        enabledSites:enabledSitesTest
                 )
 
                 if(!ItemMaskFraude02.save()){

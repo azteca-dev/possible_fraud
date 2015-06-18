@@ -22,6 +22,8 @@ class MaskFraudService {
             itemsMaskResult.add(
                     parameter_name : it.parameterName,
                     status : it.status,
+                    score : it.score,
+                    enabled_sites :it.enabledSites,
                     registration : [ operator_id:it.userRegistration, date:it.dateRegistration],
                     activation : [operator_id: it.userActivation, date:it.dateActivation],
                     deactive : [operator_id: it.userDeactivation, date:it.dateDeactivation]
@@ -51,7 +53,9 @@ class MaskFraudService {
 
         def newItemMaskFraud = new MaskFraud(
                 parameterName:jsonItemMask?.parameter_name.toLowerCase(),
-                userActivation: jsonItemMask?.operator_id
+                userActivation: jsonItemMask?.operator_id,
+                score : jsonItemMask?.score ? jsonItemMask?.score : 0,
+                enabledSites: jsonItemMask?.enabled_sites ? jsonItemMask.enabled_sites : []
         )
 
         if(!newItemMaskFraud.validate()){
@@ -65,6 +69,8 @@ class MaskFraudService {
 
         jsonResult.parameter_name       = newItemMaskFraud.parameterName
         jsonResult.status               = newItemMaskFraud.status
+        jsonResult.score                = newItemMaskFraud.score
+        jsonResult.enabled_sites        = newItemMaskFraud.enabledSites
         jsonResult.operator_id          = newItemMaskFraud.userActivation
         jsonResult.date_registration    = newItemMaskFraud.dateRegistration
 
@@ -101,7 +107,10 @@ class MaskFraudService {
             obteinedItemMaskFraud.userDeactivation = jsonItemMask?.operator_id
         }
 
+
         obteinedItemMaskFraud.status = jsonItemMask?.status.toLowerCase()
+        obteinedItemMaskFraud.score = jsonItemMask?.score ? jsonItemMask?.score : obteinedItemMaskFraud.score
+        obteinedItemMaskFraud.enabledSites = jsonItemMask?.enabled_sites ? jsonItemMask?.enabled_sites : obteinedItemMaskFraud.enabledSites
 
         if(!obteinedItemMaskFraud.validate()){
             obteinedItemMaskFraud.errors.allErrors.each {
@@ -113,7 +122,9 @@ class MaskFraudService {
         obteinedItemMaskFraud.save()
 
         jsonResult.parameter_name = obteinedItemMaskFraud.parameterName
-        jsonResult.status =obteinedItemMaskFraud.status
+        jsonResult.status = obteinedItemMaskFraud.status
+        jsonResult.score = obteinedItemMaskFraud.score
+        jsonResult.enabled_sites = obteinedItemMaskFraud.enabledSites
 
         jsonResult
 
