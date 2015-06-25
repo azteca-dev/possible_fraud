@@ -1,4 +1,3 @@
-import api.fraud.MaskFraud
 
 class UrlMappings {
 
@@ -16,6 +15,11 @@ class UrlMappings {
         "/valuefraud"{
             controller = "ValuesFraud"
             action = [GET:'getItemValue', POST:'addItemValue', PUT:'modifyItemValue', DELETE:'notAllowed']
+        }
+
+        "/processFraudVehicle/$vehicleId?"{
+            controller = "ProcessFraud"
+            action = [GET:'processFraudVehicle',POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
         }
 	}
 }
