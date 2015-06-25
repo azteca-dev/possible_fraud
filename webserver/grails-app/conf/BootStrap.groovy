@@ -1,6 +1,7 @@
 
 import api.fraud.MaskFraud
 import api.fraud.ValuesFraud
+import api.fraud.VehicleFraud
 
 class BootStrap {
 
@@ -78,6 +79,22 @@ class BootStrap {
                     }
                 }
 
+            }
+
+            if(VehicleFraud.count() == 0){
+
+                def newRegistrationFraud = new VehicleFraud(
+                        vehicleId:'xxxx',
+                        status: 'open',
+                        averange:23,
+                        coincidence : []
+                )
+                if(!newRegistrationFraud.save()){
+                    println 'Error: no se puede guardar el valor del registro de un vehiculo de posible fraude'
+                    newRegistrationFraud.errors.each{
+                        println it
+                    }
+                }
             }
         }
     }

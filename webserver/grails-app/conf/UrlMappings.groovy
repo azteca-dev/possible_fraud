@@ -21,5 +21,10 @@ class UrlMappings {
             controller = "ProcessFraud"
             action = [GET:'processFraudVehicle',POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
         }
+
+        "/vehiclesFraud/$vehicleId?"{
+            controller = "VehicleFraud"
+            action = [GET:'getVehiclesFraud', POST:'notAllowed', PUT:'notAllowed', DELETE:'notAllowed']
+        }
 	}
 }

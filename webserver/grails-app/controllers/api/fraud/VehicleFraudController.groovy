@@ -1,33 +1,30 @@
 package api.fraud
 
-import api.fraud.exceptions.BadRequestException
-import api.fraud.exceptions.NotFoundException
-import grails.converters.JSON
-
 import javax.servlet.http.HttpServletResponse
+import grails.converters.*
+import api.fraud.exceptions.NotFoundException
 
-class ProcessFraudController {
 
-    def processFraudService
+class VehicleFraudController {
 
-    def processFraudVehicle(){
+    def vehicleFraudService
+
+    def getVehiclesFraud (){
 
         def result
         setHeaders()
         try{
-            result = processFraudService.processVehicle(params)
+
+            result = vehicleFraudService.getVehiclesFraud(params)
             response.setStatus(HttpServletResponse.SC_OK)
             render result as JSON
-        }catch(NotFoundException e){
-            renderException(e)
-        }catch(BadRequestException e){
+
+        }catch (NotFoundException e){
             renderException(e)
         }catch(Exception e){
             renderException(e)
         }
-
     }
-
 
 
     def notAllowed(){
@@ -81,4 +78,5 @@ class ProcessFraudController {
         render mapExcepction as JSON
 
     }
+
 }

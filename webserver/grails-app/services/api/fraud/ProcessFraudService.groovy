@@ -1,9 +1,11 @@
 package api.fraud
 
+import api.fraud.exceptions.BadRequestException
 import api.fraud.exceptions.NotFoundException
 import grails.transaction.Transactional
 
 import javax.servlet.http.HttpServletResponse
+import java.text.MessageFormat
 
 @Transactional
 class ProcessFraudService {
@@ -11,6 +13,7 @@ class ProcessFraudService {
     def maxipublicaApiService
     def maskFraudService
     def valuesFraudService
+    def vehicleFraudService
 
     def processVehicle (def params){
 
@@ -89,24 +92,38 @@ class ProcessFraudService {
         if(difPorcentPrice <= -15) {  //TODO debemos agregar la diferencia de porcentaje en la configuracion
             coincidence << [parameter_name: 'precio', value: difPorcentPrice, score:60]
         }
-        def averangeFraud = getAverage(mask, coincidence)
+        int averangeFraud = getAverage(mask, coincidence)
 
-        coincidenceMap.vehicle_id   = dataVehicle.id
+        coincidenceMap = registrationFraud(dataVehicle.id, coincidence, averangeFraud)
+
+        coincidenceMap
+
+    }
+
+    private def registrationFraud(def vehicleId, def coincidence, int averangeFraud){
+
+        Map coincidenceMap = [:]
+        coincidenceMap.vehicle_id   = vehicleId
         coincidenceMap.averange     = averangeFraud
         coincidenceMap.coincidence  = []
 
         coincidence.each{
-
-            coincidenceMap.coincidence << [parameter_name: it.parameter_name, value: it.value]
-
+            coincidenceMap.coincidence.add(
+                    parameter_name: it.parameter_name,
+                    value:it.value
+            )
         }
 
-        if(averangeFraud > 0){
-            // TODO hacemos el registro del posible fraude
+        if(averangeFraud > 0) {
 
+            def resultRegistrationFraud = vehicleFraudService.addVehicleFraud(coincidenceMap)
+            resultRegistrationFraud
+
+        }else{
+            coincidenceMap
         }
 
-        coincidenceMap
+
 
     }
 
