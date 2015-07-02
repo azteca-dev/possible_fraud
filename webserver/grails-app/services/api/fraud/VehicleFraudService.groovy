@@ -3,6 +3,8 @@ package api.fraud
 import api.fraud.exceptions.BadRequestException
 import api.fraud.exceptions.NotFoundException
 import grails.transaction.Transactional
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 
 import java.text.MessageFormat
 
@@ -12,50 +14,97 @@ class VehicleFraudService {
     def getVehiclesFraud(def params){
 
         Map jsonResult = [:]
-        def vehiclesFraudResult = []
+        def queryMap = [:]
+        def vehiclesFraudResult
+        def vehicleFraudResults = []
 
-        // TODO aqui debemos implementar un paginado
+        def registration_date_from
+        def registration_date_to
 
-        if(!params.vehicleId){
+        def offset  = params.offset ? Integer.parseInt(params.offset) : 0
+        def limit   = params.limit ? Integer.parseInt(params.limit):Constants.DEFAULT_SEARCH_LIMIT
 
-            def vehiclesFraud = VehicleFraud.findAll()
-            if(!vehiclesFraud){
-                throw new NotFoundException('Not found vehicles')
+        limit = limit>Constants.MAX_SEARCH_LIMIT ? Constants.MAX_SEARCH_LIMIT : limit
+
+
+        def SEARCH_PARAMS_MAP = [
+                vehicle_id:"vehicleId",
+                status:"status",
+                registration_date_from:"registrationDate",
+                registration_date_to : "registrationDate"
+        ]
+
+        params.each{ key , value ->
+            def newKey = SEARCH_PARAMS_MAP[key]
+            if(newKey){
+                queryMap[newKey] = value
             }
+        }
 
-            vehiclesFraud.each{
-                vehiclesFraudResult.add(
-                        vehicle_id:it.vehicleId,
-                        averange:it.averange,
-                        status:it.status,
-                        coincidence:it.coincidence,
-                        registration_date:it.registrationDate,
-                        update_date:it.updateDate,
-                        update_operator:it.updateOperator
-                )
+        def vehicleFraudCriteria = VehicleFraud.createCriteria()
+
+        if(!queryMap){
+            vehiclesFraudResult = vehicleFraudCriteria.list(sort:"registrationDate", order:"desc", offset:offset, max:limit){
             }
-
-            jsonResult.total = vehiclesFraud.size()
-            jsonResult.results = vehiclesFraudResult
-
-
         }else{
 
-            def vehicleFraud = VehicleFraud.findByVehicleId(params.vehicleId)
-            if(!vehicleFraud){
-                throw new NotFoundException("The Vehicle Fraud not found with vehicleId = ${params.vehicleId}")
-            }
+            vehiclesFraudResult = vehicleFraudCriteria.list(sort:"registrationDate", order:"desc", offset:offset, max:limit){
 
-            jsonResult.vehicle_id           = vehicleFraud.vehicleId
-            jsonResult.averange             = vehicleFraud.averange
-            jsonResult.status               = vehicleFraud.status
-            jsonResult.coincidence          = vehicleFraud.coincidence
-            jsonResult.registration_date    = vehicleFraud.registrationDate
-            jsonResult.update_date          = vehicleFraud.updateDate
-            jsonResult.update_operator      = vehicleFraud.updateOperator
+                params.each{ key, value ->
+
+                    def newKey = SEARCH_PARAMS_MAP[key]
+                    if(newKey && (newKey!='registrationDate')){
+                        eq(newKey, value)
+                    }
+                }
+
+                if(params.registration_date_from){
+                    try{
+                        registration_date_from = ISODateTimeFormat.dateTimeParser().parseDateTime(params.registration_date_from).toDate()
+                        ge("registrationDate", registration_date_from)
+
+                    }catch(Exception e){
+                        throw new BadRequestException("Wrong date format in registration_date_from. Must be ISO json format")
+                    }
+                }
+
+                if(params.registration_date_to){
+                    try{
+                        registration_date_to = ISODateTimeFormat.dateTimeParser().parseDateTime(params.registration_date_to).toDate()
+                        le("registrationDate", registration_date_to)
+                    }catch(Exception e){
+                        throw new BadRequestException("Wrong date format in regitration_date_to. Must be ISO json format")
+                    }
+                }
+
+                if(params.registration_date_from && params.registration_date_to){
+
+                    if(registration_date_to < registration_date_from){
+                        throw new BadRequestException("Invalid date range, date resgitration_date_to must be greater then date registration_date_from")
+                    }
+
+                }
+            }
+        }
+
+        vehiclesFraudResult.each{
+
+            vehicleFraudResults.add(
+                    vehicle_id:it.vehicleId,
+                    averange:it.averange,
+                    status:it.status,
+                    coincidence:it.coincidence,
+                    registration_date:it.registrationDate,
+                    update_date:it.updateDate,
+                    update_operator:it.updateOperator
+            )
 
         }
 
+        jsonResult.total = vehiclesFraudResult.totalCount
+        jsonResult.offset = offset
+        jsonResult.limit = limit
+        jsonResult.results = vehicleFraudResults
 
         jsonResult
     }
@@ -72,7 +121,11 @@ class VehicleFraudService {
             fraudObteined.averange  = jsonVehicle.averange
             fraudObteined.status    = 'open'
             fraudObteined.registrationDate = new Date()
-            fraudObteined.coincidence = jsonVehicle.coincidence
+            fraudObteined.coincidence = []
+            jsonVehicle.coincidence.each{
+                fraudObteined.coincidence.add(it)
+            }
+
 
             if(!fraudObteined.save(flush: true)){
 
@@ -100,8 +153,11 @@ class VehicleFraudService {
                     vehicleId: jsonVehicle.vehicle_id,
                     averange: jsonVehicle.averange,
                     status: 'open',
-                    coincidence: jsonVehicle.coincidence
+                    coincidence: []
             )
+            jsonVehicle.coincidence.each {
+                newFraud.coincidence.add(it)
+            }
 
             if(!newFraud.save(flush: true)){
 

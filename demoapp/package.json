@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-static-webserver",
+  "version": "0.0.1",
+  "description": "A simple, static webserver",
+  "author": {
+    "name": "MixtliPaz",
+    "email": "mixtli.paz@gmail.com",
+    "url":  "http://www.azteca-dev.com/"
+  },
+  "homepage": "http://www.azteca-dev.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azteca-dev/possible_fraud"
+  },
+  "engines": {
+    "node": ">= 0.6.0",
+    "npm": ">= 1.0.0"
+  },
+  "dependencies": {
+    "express": "3.1.0"
+  },
+  "devDependencies": {},
+  "bundleDependencies": [],
+  "license": "MIT",
+  "main": "server.js"
+}

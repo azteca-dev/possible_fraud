@@ -1,11 +1,12 @@
 exports.get = function (request, response){
 
 	var versionId = request.params.versionId;
+    var price = Math.floor(Math.random()*1000000)
 	var json = {
     "version": {
         "category_id": versionId,
         "name": "4p Premium 5v piel",
-        "price": 100000
+        "price": price
     },
     "year": {
         "category_id": "YER10958",

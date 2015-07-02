@@ -24,9 +24,8 @@ class ProcessFraudService {
 
         if(dataVehicle.status == HttpServletResponse.SC_OK){
 
-
             searchDataInVehicle(dataVehicle.data, searchMaksFraud())
-            //dataVehicle.data
+
 
         }else{
             dataVehicle.data
@@ -55,32 +54,32 @@ class ProcessFraudService {
             switch (it.parameter_name){
                 case 'name':
                     if(searchValue(it.parameter_name, name, it.score) > 0){
-                        coincidence << [parameter_name:it.parameter_name, value:name, score:it.score]
+                        coincidence.add(parameter_name:it.parameter_name, value:name, score:it.score)
                     }
                     break
                 case 'email':
                     if(searchValue(it.parameter_name, email, it.score) > 0 ){
-                        coincidence << [parameter_name:it.parameter_name, value:email, score:it.score]
+                        coincidence.add(parameter_name:it.parameter_name, value:email, score:it.score)
                     }
                     break
                 case 'password':
                     if(searchValue(it.parameter_name, password, it.score) > 0){
-                        coincidence << [parameter_name: it.parameter_name, value:passsword, score: it.score]
+                        coincidence.add(parameter_name: it.parameter_name, value:passsword, score: it.score)
                     }
                     break
                 case 'dominio':
                     if(searchValue(it.parameter_name, domain, it.score) > 0){
-                        coincidence << [parameter_name: it.parameter_name, value:domain, score:it.score]
+                        coincidence.add(parameter_name: it.parameter_name, value:domain, score:it.score)
                     }
                     break
                 case 'telefono':
                     if(searchValue(it.parameter_name, contactPhone, it.score) > 0){
-                        coincidence << [parameter_name: it.parameter_name, value: contactPhone, score: it.score]
+                        coincidence.add(parameter_name: it.parameter_name, value: contactPhone, score: it.score)
                     }
                     break
                 case 'ip':
                     if(searchValue(it.parameter_name, ip, it.score) > 0 ){
-                        coincidence << [parameter_name: it.parameter_name, value: ip, score:it.score]
+                        coincidence.add(parameter_name: it.parameter_name, value: ip, score:it.score)
                     }
                     break
                 default :
@@ -90,7 +89,7 @@ class ProcessFraudService {
 
         def difPorcentPrice = getDiffPriceGDP(versionId, priceVehicle)
         if(difPorcentPrice <= -15) {  //TODO debemos agregar la diferencia de porcentaje en la configuracion
-            coincidence << [parameter_name: 'precio', value: difPorcentPrice, score:60]
+            coincidence.add(parameter_name: 'precio', value: difPorcentPrice, score:60)
         }
         int averangeFraud = getAverage(mask, coincidence)
 
@@ -107,7 +106,7 @@ class ProcessFraudService {
         coincidenceMap.averange     = averangeFraud
         coincidenceMap.coincidence  = []
 
-        coincidence.each{
+       coincidence.each{
             coincidenceMap.coincidence.add(
                     parameter_name: it.parameter_name,
                     value:it.value

@@ -27,9 +27,24 @@ class RestService {
 
     def grailsApplication = new DefaultGrailsApplication()
 
-    def urlBase        =  grailsApplication.config.domainMainRest
+    def urlBase         =  grailsApplication.config.domainMainRest
+    def urlBaseVehicles = grailsApplication.config.domainVahicleRest
 
     def restClient  = new RESTClient(urlBase)
+
+    def defineServiceResource(def resource){
+
+        switch (resource){
+
+            case 'vehicles':
+                restClient = new RESTClient(urlBaseVehicles)
+                break
+            default:
+                restClient = new RESTClient(urlBase)
+                break
+
+        }
+    }
 
     def getResource(def resource, def queryParams){
 

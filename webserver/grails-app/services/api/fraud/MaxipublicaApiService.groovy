@@ -10,13 +10,15 @@ class MaxipublicaApiService {
 
     def getDataVehicle (def vehicleId){
 
+        restService.defineServiceResource('vehicles')
         def result = restService.getResource("/vehicle/${vehicleId}")
         result
     }
 
     def getCatlogPrice (def versionId){
 
-        def result =restService.getResource("/catalog/MX/MXP/${versionId}")
+        restService.defineServiceResource('catalogo')
+        def result =restService.getResource("/catalogV2/MX/MXP/${versionId}")
         result
     }
 }

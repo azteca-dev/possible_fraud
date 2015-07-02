@@ -5,6 +5,14 @@ exports.get = function (request, response){
 
 	var json;
 
+    var price = 756000
+    var definePrice =Math.floor(Math.random()*10)
+
+    if(definePrice >= 5){
+        price = 50000
+
+    }
+
 	json = {
     "id": vehicleId,
     "stock_number": "2",
@@ -28,7 +36,7 @@ exports.get = function (request, response){
         }
     },
     "kilometers": 17849,
-    "price": 75000,
+    "price": price,
     "description": "¡¡¡ PRECIOS UNICOS !!! SOLO ESTE MES, DE CONTADO O CREDITO BEETLE SPORT CON MOTOR 2.5 con AA, DH, RADIO, RINNES, AIRBAGS, ABS,PIEL,QUEMACOCOS ,FAROS DE NIEBLA Y ELECTRICO con UN ENGANCHE DE $ 52,600.00 ¡ SIN AVAL! Minimos requisitos y hasta 48 meses para pagar,APARTA TU CARRO CON SOLO $ 5,000.00 o tambi?n puedes dejarnos TU AUTO A CUENTA.Para hacer valido este PRECIO, imprimir el anuncio y pasar con Edith Maldonado 1042-4561 ID 52x248432x2 y Jos? Antonio Maldonado 3186-2753. ID 52x248432x3======= WHATSAPP 55 6351-8704======= Contactanos via e-mail comprauto@yahoo.com.mx PARA HACERTE LLEGAR UNA COTIZACION, y visitanos en nuestro Facebook xxx Central Usados VW Circuito xxxen nuestra pagina de internet www.centralusados.com.mx",
     "condition": "usado",
     "dealer": {
