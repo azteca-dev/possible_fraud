@@ -21,7 +21,7 @@ app.get('/ping',misc.ping);
 app.get('/dummy',dummy.getDummyInfo);
 
 app.get('/vehicle/:vehicleId', vehicle.get);
-app.get('/catalog/MX/MXP/:versionId', catalog.get);
+app.get('/catalogV2/MX/MXP/:versionId', catalog.get);
 
 
 //

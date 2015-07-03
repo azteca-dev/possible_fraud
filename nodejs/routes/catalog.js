@@ -6,7 +6,7 @@ exports.get = function (request, response){
     "version": {
         "category_id": versionId,
         "name": "4p Premium 5v piel",
-        "price": price
+        "price": ""+price
     },
     "year": {
         "category_id": "YER10958",

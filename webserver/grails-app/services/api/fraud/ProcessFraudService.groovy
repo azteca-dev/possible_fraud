@@ -153,7 +153,7 @@ class ProcessFraudService {
             if(versionId){
                 def priceCatalog = maxipublicaApiService.getCatlogPrice(versionId)
                 if(priceCatalog.status == HttpServletResponse.SC_OK){
-                    priceGDP = priceCatalog.data.version.price ? priceCatalog.data.version.price : 0
+                    priceGDP = priceCatalog.data.version.price ?  Double.parseDouble(priceCatalog.data.version.price) : 0
                 }
             }
         }catch (Exception e){

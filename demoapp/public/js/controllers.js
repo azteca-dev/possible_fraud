@@ -277,24 +277,78 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
         })
     }
 
-    $scope.reportFraudVehicle = function (){
-        var params = {};
+    $scope.reportFraudVehicle = function (page){
+
+        var offset = ($scope.defaultLimit * page) - $scope.defaultLimit;
+        var params = {
+            offset:offset,
+            limit:$scope.defaultLimit
+        };
+        
+        if($scope.dateFrom){
+            var dateFrom = $scope.dateFrom.value; 
+            params = {
+            offset:offset,
+            limit:$scope.defaultLimit,
+            registration_date_from:dateFrom
+            };       
+        }
+
+        if($scope.dateTo){
+
+        var dateTo = $scope.dateTo.value;
+        params = {
+            offset:offset,
+            limit:$scope.defaultLimit,
+            registration_date_to:dateTo
+            };
+
+        }
+
+        
+
+        if($scope.reportSearchVehicleId){
+            
+            params = {
+            offset:offset,
+            limit:$scope.defaultLimit,
+            vehicle_id:$scope.reportSearchVehicleId
+            };
+        }
+
         var body = {};
         $scope.reporteConResultados = false;
         $scope.errorFraudReport = '';
         console.log("Entrando a la funcion de resporte...");
+
         Report.get(params, body, function(data){
             console.log("si realizo el get...");
+            $scope.pages = [];
+            $scope.currentPage = page;
             $scope.errorFraudReport = '';
             if(data.total > 0){
             console.log("si encontro resultados...");
             $scope.reporteConResultados = true;
             $scope.vehiclesFraud = data.results;
             $scope.reportFraudTotal = data.total;
+
+            $scope.maxPage = Math.ceil(data.total / data.limit);
+            var start = getStartPage(page, $scope.maxPage);
+            var end = getEndPage(page, $scope.maxPage);
+
+            for (var i = start; i <= end; i++) {
+                $scope.pages.push(i);
+            }
+
+            }else{
+              $scope.reporteConResultados = false;
+              $scope.reportFraudTotal = 0;  
+              $scope.maxPage =1;
             }
 
         }, function (error){
             $scope.reporteConResultados = false;
+            $scope.reportFraudTotal = 0;
             $scope.errorFraudReport = 'Ups!! Ocurrio un error al obtener los datos';
         })
     }

@@ -6,7 +6,7 @@ var module = angular.module('possibleFraudServices', ['ngResource']);
 
 module.factory('Mask', function($resource){
     
-    var url = apiBaseUrl+"/possible_fraud/maskfraud";
+    var url = apiBaseUrl+"/fraud/maskfraud";
     return $resource(url, {}, {
         get:{method:"GET", params:{}},
         post:{method:"POST", params:{}},
@@ -16,7 +16,7 @@ module.factory('Mask', function($resource){
 
 module.factory('Values', function($resource){
 
-    var url = apiBaseUrl+"/possible_fraud/valuefraud";
+    var url = apiBaseUrl+"/fraud/valuefraud";
     return $resource(url, {}, {
         get:{method:"GET", params:{}},
         post:{method:"POST", params:{}}
@@ -26,7 +26,7 @@ module.factory('Values', function($resource){
 
 module.factory('Process', function($resource){
 
-    var url = apiBaseUrl+"/possible_fraud/processFraudVehicle";
+    var url = apiBaseUrl+"/fraud/processFraudVehicle";
     return $resource(url, {}, {
         get:{method:"GET", params:{}}
 
@@ -35,7 +35,7 @@ module.factory('Process', function($resource){
 
 module.factory('Report', function($resource){
 
-    var url = apiBaseUrl+"/possible_fraud/vehiclesFraud";
+    var url = apiBaseUrl+"/fraud/vehiclesFraud";
     return $resource(url, {}, {
         get:{method:"GET", params:{}}
     });

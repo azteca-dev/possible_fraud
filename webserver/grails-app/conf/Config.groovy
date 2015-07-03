@@ -89,8 +89,8 @@ environments {
     development {
         grails.logging.jul.usebridge = true
         //domainMainRest = 'http://localhost:8888'
-        domainMainRest = 'http://pre.maxipublica.com'
-        domainVahicleRest = 'http://api.maxipublica.com:9091'
+        domainMainRest = 'http://localhost:8888'
+        domainVahicleRest = 'http://localhost:8888'
     }
     production {
         grails.logging.jul.usebridge = false
