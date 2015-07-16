@@ -86,7 +86,7 @@
                 <td>{{mask.enabled_sites}}</td>
                 <td>
                         <a class="btn btn-info" ng-click="loadDataEditMask(mask); showOption('editMask');" href="#">Editar</a>
-                        <a class="btn btn-info" ng-click="loadDataValue(mask); showOption('addValueParam');" href="#">Agregar valor</a>
+                        <a class="btn btn-info" ng-click="loadDataValue(mask); showOption('addValueParam');  searchValuesOfParams(1);" href="#">Agregar valor</a>
                 </td>
             </tr>
 
@@ -95,7 +95,7 @@
         <a ng-click="showOption('0')" class="btn btn-default" href="#" role="button">Regresar</a>
         <button type="submit" ng-click="showOption('newMask')" class="btn btn-success">Nuevo</button>
        </p>
-       
+
       </div>
 
       <!-- Mascara de filtros Nuevo -->
@@ -139,7 +139,7 @@
 
         <p>
         <a ng-click="searchMaskFraud(); showOption('listMask')" class="btn btn-default" href="#" role="button">Regresar</a>
-        
+
        </p>
 
       </div>
@@ -193,7 +193,7 @@
 
         <p>
         <a ng-click="searchMaskFraud(); showOption('listMask')" class="btn btn-default" href="#" role="button">Regresar</a>
-        
+
        </p>
       </div>
 
@@ -210,7 +210,7 @@
           </div>
           <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" ng-click="addNewValueToParam('user_admin')" class="btn btn-success">Agregar</button>
+              <button type="submit" ng-click="addNewValueToParam('user_admin');" class="btn btn-success">Agregar</button>
               <button type="submit" ng-click="searchParamsValues()" class="btn btn-success">Buscar</button>
             </div>
           </div>
@@ -224,10 +224,34 @@
 
         <p>
         <a ng-click="searchMaskFraud(); showOption('listMask')" class="btn btn-default" href="#" role="button">Regresar</a>
-        
+
        </p>
 
         </div>
+
+
+        <!-- Lista de valores de cada item de mascara-->
+        <h2>{{messageValuesOfItemMask}}</h2>
+        <div ng-show="showValuesOfItemMask">
+
+          
+          <span><p>Total:{{totalValuesOfItemMask}}</p></span>
+
+          <table class="table">
+            <tr>
+              <th>Value</th>
+              <th>Status</th>
+
+            </tr>
+            <tr ng-repeat="results in resultsValuesOfItemMask">
+              <td>{{results.value}}</td>
+              <td>{{results.status}}</td>
+            </tr>
+
+          </table>
+
+        </div>
+
     <!-- Procesamiento de un vehicle_id -->
         <div ng-show="showProcessVehicle">
         <form class="form-horizontal" >
@@ -247,14 +271,14 @@
             <h3>{{messageProcessVehicle}}</h3>
         </div>
         <div ng-show="showProcessResult">
-                    <h4>vehicle_id:{{vehicleId}}</h4> 
+                    <h4>vehicle_id:{{vehicleId}}</h4>
                     <h4>promedio:{{processPromedio}}</h4>
-                    <h4>coincidencias:{{processCoincidences}}</h4>      
+                    <h4>coincidencias:{{processCoincidences}}</h4>
         </div>
 
         <p>
         <a ng-click="showOption('0')" class="btn btn-default" href="#" role="button">Regresar</a>
-        
+
        </p>
 
         </div>
@@ -270,7 +294,7 @@
                        <input type="date" id="exampleInput" name="input" ng-model="dateFrom.value"
                            placeholder="yyyy-MM-dd" class="form-control"    />
                         </div>
-                       
+
                         <!-- <tt>value = {{dateFrom.value | date: "yyyy-MM-dd"}}</tt><br/> -->
                     </div>
 
@@ -280,7 +304,7 @@
                        <input type="date" id="exampleInput" name="input" ng-model="dateTo.value"
                            placeholder="yyyy-MM-dd"  class="form-control"  />
                         </div>
-                       
+
                         <!-- <tt>value = {{dateTo.value | date: "yyyy-MM-dd"}}</tt><br/> -->
                     </div>
 
@@ -304,7 +328,7 @@
             <h3>Total:{{reportFraudTotal}}</h3>
             <h2>{{errorFraudReport}}</h2>
 
-  
+
 
              <div ng-show="maxPage > 1" >
                         <div class="form-inline">

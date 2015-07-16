@@ -26,6 +26,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
     $scope.defaultLimit = 10;
     $scope.maxPageIndex = 10;
     $scope.pageOffset = 0;
+    $scope.showValuesOfItemMask = false;
 
     $scope.showOption = function(option){
         console.log("buscando opcion = "+option);
@@ -48,7 +49,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",mlm";
             }
-            
+
         }
         if ($scope.enabled_sites_apc){
             if(sites == ''){
@@ -56,7 +57,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",apc";
             }
-            
+
         }
         if ($scope.enabled_sites_carmudi){
             if(sites == ''){
@@ -64,11 +65,11 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",carmudi";
             }
-            
+
         }
 
         enabled_sites.push(sites);
-        
+
         var body = {
             parameter_name:$scope.parameter_name,
             score:parseInt($scope.score),
@@ -78,7 +79,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
         console.log("los parametros del checbox"+$scope.enabled_sites);
 
         console.log("el joson que enviaremos es"+body.enabled_sites[0]);
-    
+
 
         Mask.post(params, body, function(data){
             $scope.maskFraudError = '';
@@ -91,7 +92,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
     }
 
     $scope.searchParamsValues = function (){
-        
+
         $scope.messageValueAdd = '';
         console.log("Entramos a buscar un parametro con nombre = "+$scope.parameterNameAddValue+" y valor = "+$scope.parameter_value_search);
         $scope.showSearchParamValue = true;
@@ -108,8 +109,35 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
         });
     }
 
+    function researchValuesOfParams(page){
+
+      console.log("Entramos a cargar los parametros encontrados por cada item de mascara");
+      var offset = 0;
+      var limit = 10;
+      var params = {
+        parameter_name:$scope.parameterNameAddValue,
+        offset:offset,
+        limit:limit
+      };
+
+      Values.get(params, {}, function(data){
+        $scope.showValuesOfItemMask = true;
+        $scope.messageValuesOfItemMask = '';
+        $scope.totalValuesOfItemMask = data.total;
+        $scope.resultsValuesOfItemMask = data.results;
+      }, function(error){
+        $scope.showValuesOfItemMask =false;
+        $scope.messageValuesOfItemMask = 'No tienen valores el parametro'+$scope.parameterNameAddValue;
+      });
+
+    }
+    $scope.searchValuesOfParams = function (page){
+
+      researchValuesOfParams(page);
+    }
+
     $scope.addNewValueToParam = function(operatorId){
-         
+
         $scope.messageValueAdd = '';
          var params = {};
          var body = {
@@ -121,6 +149,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
          Values.post(params, body, function(data){
             $scope.messageValueAdd = "El value = "+$scope.parameter_value_search+" para el parametro = "+$scope.parameterNameAddValue+
            " se agrego correctamente";
+           researchValuesOfParams(1);
          }, function (error){
             $scope.messageValueAdd = "EL parametro no se agrego o ya existe";
 
@@ -128,7 +157,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
     }
 
     $scope.loadDataEditMask = function(mask){
-        
+
         $scope.activeSelected = false;
         $scope.inactiveSelected = false;
         $scope.parameter_name = mask.parameter_name
@@ -162,8 +191,8 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                     }
                     if(sitesArray[value].toString() == "carmudi"){
                         $scope.enabled_sites_carmudi = true;
-                        
-                    } 
+
+                    }
                 }
 
             }else{
@@ -177,16 +206,17 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                     }
                     if(mask.enabled_sites[enableSite].toString() == "carmudi"){
                         $scope.enabled_sites_carmudi = true;
-                        
-                    } 
-            }    
-        }       
+
+                    }
+            }
+        }
     }
 
     $scope.loadDataValue = function(mask){
 
         console.log("cargando el  nombre del parametros que queremos buscar");
         $scope.parameterNameAddValue = mask.parameter_name;
+
     }
 
     $scope.editMaskFraud =function(operatorId){
@@ -201,7 +231,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",mlm";
             }
-            
+
         }
         if ($scope.enabled_sites_apc){
             if(sites == ''){
@@ -209,7 +239,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",apc";
             }
-            
+
         }
         if ($scope.enabled_sites_carmudi){
             if(sites == ''){
@@ -217,11 +247,11 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             }else{
                 sites += ",carmudi";
             }
-            
+
         }
 
         enabled_sites.push(sites);
-        
+
         var body = {
             parameter_name:$scope.parameter_name,
             score:parseInt($scope.score),
@@ -238,7 +268,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
         console.log("status:"+body.status);
 
         Mask.put(params, body, function(data){
-            
+
             console.log("el estatus es "+data.status);
             $scope.maskFraudError = '';
             reloadMaskFraudList();
@@ -258,7 +288,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
         };
 
         Process.get(params, {}, function (data){
-            
+
             $scope.messageProcessVehicle = "El vehiculo fue procesado";
             $scope.showProcessResult = true;
             $scope.vehicleId = data.vehicle_id;
@@ -266,12 +296,12 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
 
             $scope.processCoincidences = '';
             for (var coincidence in data.coincidence){
-               $scope.processCoincidences += ' - '+data.coincidence[coincidence].parameter_name+"="+data.coincidence[coincidence].value; 
+               $scope.processCoincidences += ' - '+data.coincidence[coincidence].parameter_name+"="+data.coincidence[coincidence].value;
             }
 
-            
+
         }, function(error){
-            
+
             $scope.messageProcessVehicle = "Ocurrio un error y no se proceso";
             $scope.showProcessResult = false;
         })
@@ -284,14 +314,14 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
             offset:offset,
             limit:$scope.defaultLimit
         };
-        
+
         if($scope.dateFrom){
-            var dateFrom = $scope.dateFrom.value; 
+            var dateFrom = $scope.dateFrom.value;
             params = {
             offset:offset,
             limit:$scope.defaultLimit,
             registration_date_from:dateFrom
-            };       
+            };
         }
 
         if($scope.dateTo){
@@ -305,10 +335,10 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
 
         }
 
-        
+
 
         if($scope.reportSearchVehicleId){
-            
+
             params = {
             offset:offset,
             limit:$scope.defaultLimit,
@@ -342,7 +372,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
 
             }else{
               $scope.reporteConResultados = false;
-              $scope.reportFraudTotal = 0;  
+              $scope.reportFraudTotal = 0;
               $scope.maxPage =1;
             }
 
@@ -361,7 +391,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 reportFraudCoincidencias += arrayCoincidences[index].parameter_name+",";
             }
         return (reportFraudCoincidencias);
-            
+
     }
 
     function getStartPage(page, maxPage) {
@@ -406,6 +436,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'newMask':
                 $scope.showDemoMain = false;
@@ -417,6 +448,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'editMask':
                 $scope.showDemoMain = false;
@@ -428,6 +460,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'addValueParam':
             console.log("si llego a la opcion del value");
@@ -440,6 +473,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'searchValueParam':
                 $scope.showDemoMain = false;
@@ -451,6 +485,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'process':
                 $scope.showDemoMain = false;
@@ -462,6 +497,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = true;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
             break;
             case 'report':
                  $scope.showReportFraud = true;
@@ -473,6 +509,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showSearchParamValue = false;
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
+                $scope.showValuesOfItemMask =false;
             break;
             default:
                 $scope.showDemoMain = true;
@@ -484,6 +521,7 @@ function possibleFraudController($scope, $timeout, $filter, Mask, Values, Proces
                 $scope.showProcessVehicle = false;
                 $scope.showProcessResult = false;
                 $scope.showReportFraud = false;
+                $scope.showValuesOfItemMask =false;
         }
     }
 
