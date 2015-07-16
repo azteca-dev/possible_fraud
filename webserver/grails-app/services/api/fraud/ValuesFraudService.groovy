@@ -18,27 +18,54 @@ class ValuesFraudService {
             throw new BadRequestException('You must provider parameter_name')
         }
         if(!params.value){
-            throw new BadRequestException('You must provider value')
+
+            def offset  = params.offset ? Integer.parseInt(params.offset) : 0
+            def limit   = params.limit ? Integer.parseInt(params.limit):Constants.DEFAULT_SEARCH_LIMIT
+
+            limit = limit>Constants.MAX_SEARCH_LIMIT ? Constants.MAX_SEARCH_LIMIT : limit
+
+            def itemValues = ValuesFraud.findAllByParameterName(params.parameter_name.toLowerCase(), [max: limit, offset: offset])
+            if(!itemValues){
+                throw new NotFoundException('The parameter = ' +params.parameter_name + ' not found')
+            }
+            itemValues.each{
+                resultsValues.add(
+                        parameter_name: it.parameterName,
+                        value: it.value,
+                        status: it.status,
+                        registration: [operator_id: it.userRegistration, date: it.dateRegistration],
+                        activation: [operator_id: it.userUpdate, date: it.dateActived],
+                        deactivation: [operator_id: it.userDeleted, date: it.dateDeleted]
+                )
+            }
+
+            jsonResult.total = resultsValues.size()
+            jsonResult.offset = offset
+            jsonResult.limit = limit
+            jsonResult.results = resultsValues
+
+        }else {
+
+            def itemValue = ValuesFraud.findAllByParameterNameAndValue(params.parameter_name.toLowerCase(), params.value)
+
+            if (!itemValue) {
+                throw new NotFoundException('The parameter = ' + params.parameter_name + ' and value = ' + params.value + ' not found')
+            }
+
+            itemValue.each {
+                resultsValues.add(
+                        parameter_name: it.parameterName,
+                        value: it.value,
+                        status: it.status,
+                        registration: [operator_id: it.userRegistration, date: it.dateRegistration],
+                        activation: [operator_id: it.userUpdate, date: it.dateActived],
+                        deactivation: [operator_id: it.userDeleted, date: it.dateDeleted]
+                )
+            }
+
+            jsonResult.results = resultsValues
         }
 
-        def itemValue = ValuesFraud.findAllByParameterNameAndValue(params.parameter_name.toLowerCase(), params.value)
-
-        if(!itemValue){
-            throw new NotFoundException('The parameter = '+params.parameter_name+' and value = '+params.value+' not found')
-        }
-
-        itemValue.each{
-            resultsValues.add(
-                    parameter_name:it.parameterName,
-                    value:it.value,
-                    status: it.status,
-                    registration:[operator_id:it.userRegistration, date:it.dateRegistration],
-                    activation:[operator_id: it.userUpdate, date:it.dateActived],
-                    deactivation:[operator_id: it.userDeleted, date:it.dateDeleted]
-            )
-        }
-
-        jsonResult.results = resultsValues
         jsonResult
     }
 
