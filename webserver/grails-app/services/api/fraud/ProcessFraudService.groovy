@@ -1,5 +1,6 @@
 package api.fraud
 
+import org.codehaus.groovy.grails.web.util.WebUtils
 import api.fraud.exceptions.BadRequestException
 import api.fraud.exceptions.NotFoundException
 import grails.transaction.Transactional
@@ -20,7 +21,10 @@ class ProcessFraudService {
         if(!params.vehicleId){
             throw new NotFoundException('You most provider the vehicleId')
         }
-        def dataVehicle = maxipublicaApiService.getDataVehicle(params.vehicleId)
+
+        def accessToken = getAccessToken()
+
+        def dataVehicle = maxipublicaApiService.getDataVehicle(params.vehicleId,accessToken)
 
         if(dataVehicle.status == HttpServletResponse.SC_OK){
 
@@ -39,6 +43,13 @@ class ProcessFraudService {
         Map coincidenceMap = [:]
         def coincidence = []
 
+        String remoteAddress
+        try{
+            def request = WebUtils.retrieveGrailsWebRequest().getCurrentRequest()
+            remoteAddress = request.getRemoteAddr()
+        }catch(Exception e){
+            remoteAddress = 'sin_direccion'
+        }
 
         def name            = dataVehicle.dealer.seller_contact.name ? dataVehicle.dealer.seller_contact.name : ''
         def email           = dataVehicle.dealer.seller_contact.email ? dataVehicle.dealer.seller_contact.email : ''
@@ -47,37 +58,37 @@ class ProcessFraudService {
         def domain          = getDomainEmail(email)
         def priceVehicle    = dataVehicle.price ? dataVehicle.price : ''
         def versionId       = dataVehicle.vehicle.version.category_id ? dataVehicle.vehicle.version.category_id : ''
-        def ip              = ''
+        def ip              = remoteAddress
         //currencyType    = dataVehicle.attributes.currencies.id ? dataVehicle.attributes.currencies.id :''
 
         mask.each{
             switch (it.parameter_name){
-                case 'name':
+                case Constants.PARAMETER_MASK_NAME:
                     if(searchValue(it.parameter_name, name, it.score) > 0){
                         coincidence.add(parameter_name:it.parameter_name, value:name, score:it.score)
                     }
                     break
-                case 'email':
+                case Constants.PARAMETER_MASK_EMAIL:
                     if(searchValue(it.parameter_name, email, it.score) > 0 ){
                         coincidence.add(parameter_name:it.parameter_name, value:email, score:it.score)
                     }
                     break
-                case 'password':
+                case Constants.PARAMETER_MASK_PASSWORD:
                     if(searchValue(it.parameter_name, password, it.score) > 0){
                         coincidence.add(parameter_name: it.parameter_name, value:passsword, score: it.score)
                     }
                     break
-                case 'dominio':
+                case Constants.PARAMETER_MASK_DOMINIO:
                     if(searchValue(it.parameter_name, domain, it.score) > 0){
                         coincidence.add(parameter_name: it.parameter_name, value:domain, score:it.score)
                     }
                     break
-                case 'telefono':
+                case Constants.PARAMETER_MASK_TELEFONO:
                     if(searchValue(it.parameter_name, contactPhone, it.score) > 0){
                         coincidence.add(parameter_name: it.parameter_name, value: contactPhone, score: it.score)
                     }
                     break
-                case 'ip':
+                case Constants.PARAMETER_MASK_IP:
                     if(searchValue(it.parameter_name, ip, it.score) > 0 ){
                         coincidence.add(parameter_name: it.parameter_name, value: ip, score:it.score)
                     }
@@ -88,8 +99,8 @@ class ProcessFraudService {
         }
 
         def difPorcentPrice = getDiffPriceGDP(versionId, priceVehicle)
-        if(difPorcentPrice <= -15) {  //TODO debemos agregar la diferencia de porcentaje en la configuracion
-            coincidence.add(parameter_name: 'precio', value: difPorcentPrice, score:60)
+        if(difPorcentPrice <= Constants.PORCENT_GDP) {  //TODO debemos agregar la diferencia de porcentaje en la configuracion
+            coincidence.add(parameter_name: Constants.PARAMETER_MASK_PRECIO, value: difPorcentPrice, score:60)
         }
         int averangeFraud = getAverage(mask, coincidence)
 
@@ -151,7 +162,7 @@ class ProcessFraudService {
 
         try{
             if(versionId){
-                def priceCatalog = maxipublicaApiService.getCatlogPrice(versionId)
+                def priceCatalog = maxipublicaApiService.getCatalogPrice(versionId)
                 if(priceCatalog.status == HttpServletResponse.SC_OK){
                     priceGDP = priceCatalog.data.version.price ?  Double.parseDouble(priceCatalog.data.version.price) : 0
                 }
@@ -176,7 +187,7 @@ class ProcessFraudService {
 
         coincidence.each{
             scoreFind += it.score
-            if(it.parameter_name == 'precio'){
+            if(it.parameter_name == Constants.PARAMETER_MASK_PRECIO){
                 maxScore = maxScore + it.score
             }
         }
@@ -207,6 +218,16 @@ class ProcessFraudService {
         }
 
         result
+    }
+
+    private String getAccessToken(){
+
+        def accessToken = ''
+        def resultToken = maxipublicaApiService.getAccessTokenAdmin(Constants.EMAIL_ADMIN, Constants.PASS_ADMIN)
+        if(resultToken.status == HttpServletResponse.SC_ACCEPTED){
+            accessToken = resultToken.data.access_token
+        }
+        accessToken
     }
 
     def searchMaksFraud(){

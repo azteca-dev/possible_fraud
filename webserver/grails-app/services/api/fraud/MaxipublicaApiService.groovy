@@ -8,17 +8,30 @@ class MaxipublicaApiService {
 
     def restService =  new RestService()
 
-    def getDataVehicle (def vehicleId){
+    def getDataVehicle (def vehicleId, def accessToken){
 
-        restService.defineServiceResource('vehicles')
-        def result = restService.getResource("/vehicle/${vehicleId}")
+        def params = [
+                access_token:accessToken
+        ]
+
+        def result = restService.getResource("/vehicletest/${vehicleId}", params)
         result
     }
 
-    def getCatlogPrice (def versionId){
+    def getCatalogPrice (def versionId){
 
-        restService.defineServiceResource('catalogo')
         def result =restService.getResource("/catalogV2/MX/MXP/${versionId}")
+        result
+    }
+
+    def getAccessTokenAdmin(def email, def password){
+
+        def body =[
+                email:email,
+                password:password
+        ]
+        def result = restService.postResource('/oauth/', body)
+
         result
     }
 }

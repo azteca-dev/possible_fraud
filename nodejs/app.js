@@ -2,6 +2,7 @@ var express 	= require('express'),
 	misc 		= require('./routes/misc'),
 	vehicle		= require('./routes/vehicle'),
 	catalog		= require('./routes/catalog'),
+	oauth		= require('./routes/oauth'),
    	dummy 		= require('./routes/dummy');
    	//misc = require('./routes/misc');
 
@@ -20,8 +21,11 @@ app.configure('development', function () {
 app.get('/ping',misc.ping);
 app.get('/dummy',dummy.getDummyInfo);
 
-app.get('/vehicle/:vehicleId', vehicle.get);
+app.get('/vehicletest/:vehicleId', vehicle.get);
 app.get('/catalogV2/MX/MXP/:versionId', catalog.get);
+
+app.post('/oauth/', oauth.post);
+app.options('/oauth/', oauth.options);
 
 
 //

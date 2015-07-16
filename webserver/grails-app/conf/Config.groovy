@@ -88,15 +88,13 @@ grails.hibernate.osiv.readonly = false
 environments {
     development {
         grails.logging.jul.usebridge = true
-        //domainMainRest = 'http://localhost:8888'
         domainMainRest = 'http://localhost:8888'
-        domainVahicleRest = 'http://localhost:8888'
+
     }
     production {
         grails.logging.jul.usebridge = false
-        domainMainRest = 'http://pre.maxipublica.com'
-        domainVahicleRest = 'http://api.maxipublica.com:9091'
-        // TODO: grails.serverURL = "http://www.changeme.com"
+        domainMainRest = 'http://api2.maxipublica.com'
+
     }
     test{
 
@@ -123,3 +121,5 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+grails.config.locations = ["file:/usr/local/tomcat8/lib/con.groovy"]
