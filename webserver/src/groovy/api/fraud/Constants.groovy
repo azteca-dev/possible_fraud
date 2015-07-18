@@ -13,7 +13,7 @@ class Constants {
 
     static final int PORCENT_GDP = -15
 
-    static final String PARAMETER_MASK_NAME     = 'name'
+    static final String PARAMETER_MASK_NAME     = 'nombre'
     static final String PARAMETER_MASK_EMAIL    = 'email'
     static final String PARAMETER_MASK_PASSWORD = 'password'
     static final String PARAMETER_MASK_DOMINIO  = 'dominio'

@@ -54,7 +54,7 @@ class ProcessFraudService {
         def name            = dataVehicle.dealer.seller_contact.name ? dataVehicle.dealer.seller_contact.name : ''
         def email           = dataVehicle.dealer.seller_contact.email ? dataVehicle.dealer.seller_contact.email : ''
         def contactPhone    = dataVehicle.dealer.seller_contact.phone.phone_number ? dataVehicle.dealer.seller_contact.phone.phone_number : ''
-        def password        = ''
+        //def password        = ''
         def domain          = getDomainEmail(email)
         def priceVehicle    = dataVehicle.price ? dataVehicle.price : ''
         def versionId       = dataVehicle.vehicle.version.category_id ? dataVehicle.vehicle.version.category_id : ''
@@ -73,11 +73,11 @@ class ProcessFraudService {
                         coincidence.add(parameter_name:it.parameter_name, value:email, score:it.score)
                     }
                     break
-                case Constants.PARAMETER_MASK_PASSWORD:
+                /*case Constants.PARAMETER_MASK_PASSWORD:
                     if(searchValue(it.parameter_name, password, it.score) > 0){
-                        coincidence.add(parameter_name: it.parameter_name, value:passsword, score: it.score)
+                        coincidence.add(parameter_name: it.parameter_name, value:password, score: it.score)
                     }
-                    break
+                    break*/
                 case Constants.PARAMETER_MASK_DOMINIO:
                     if(searchValue(it.parameter_name, domain, it.score) > 0){
                         coincidence.add(parameter_name: it.parameter_name, value:domain, score:it.score)
