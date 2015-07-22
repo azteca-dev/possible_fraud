@@ -20,7 +20,7 @@ class MaxipublicaApiService {
 
     def getCatalogPrice (def versionId){
 
-        def result =restService.getResource("/catalogV2/MX/MXP/${versionId}")
+        def result =restService.getResource("/catalog/MX/MXP/${versionId}")
         result
     }
 
